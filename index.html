@@ -7,8 +7,9 @@
   <body>
     <h1>BigIntegers and RSA in JavaScript</h1>
 
-The <code>jsbn</code> library is a pure JavaScript implementation
-of arbitrary-precision integer arithmetic.
+The <code>jsbn</code> library is a fast, portable implementation of
+large-number math in pure JavaScript, enabling public-key crypto
+and other applications on desktop and mobile browsers.
 
 <h2>Demos</h2>
 
@@ -30,11 +31,18 @@ For example:
 </pre>
 will print <code>b60c</code>.
 
+<h3>Core Library</h3>
 <ul>
 <li><a href="jsbn.js"><code>jsbn.js</code></a> - basic BigInteger implementation, just enough for RSA encryption and not much more.
 <li><a href="jsbn2.js"><code>jsbn2.js</code></a> - the rest of the library, including most public <code>BigInteger</code> methods.
+</ul>
+<h3>RSA</h3>
+<ul>
 <li><a href="rsa.js"><code>rsa.js</code></a> - implementation of RSA encryption, does not require <code>jsbn2.js</code>.
 <li><a href="rsa2.js"><code>rsa2.js</code></a> - rest of RSA algorithm, including decryption and keygen.
+</ul>
+<h3>Utilities</h3>
+<ul>
 <li><a href="rng.js"><code>rng.js</code></a> - rudimentary entropy collector and RNG interface, requires a PRNG backend to define <code>prng_newstate()</code>.
 <li><a href="prng4.js"><code>prng4.js</code></a> - ARC4-based PRNG backend for <code>rng.js</code>, very small.
 <li><a href="base64.js"><code>base64.js</code></a> - Base64 encoding and decoding routines.
@@ -85,6 +93,11 @@ testing$
 
 <h2>Performance</h2>
 
+<code>jsbn</code> is one of the fastest JavaScript bignum libraries
+currently available.  Google uses it as part of their
+<a href="http://v8.googlecode.com/svn/data/benchmarks/v6/run.html">benchmark suite</a>
+for JavaScript.
+
 Since <code>jsbn</code> is pure JavaScript, its performance will
 depend on the hardware as well as the quality of the JavaScript
 execution environment, but will be considerably slower than native
@@ -109,6 +122,18 @@ On similar hardware, running IE6:
 </table>
 Timing measurememnts, especially under IE, appear to have limited
 precision for faster operations.
+
+<h2>Projects that use jsbn</h2>
+
+<ul>
+<li><a href="https://github.com/digitalbazaar/forge">Forge</a> - a pure JavaScript implementation of SSL/TLS, includes a discussion of their <a href="http://digitalbazaar.com/2010/07/20/javascript-tls-2/">choice of BigInteger library</a>
+<li><a href="http://www.dojotoolkit.org/">Dojo Toolkit</a> uses jsbn in their <a href="http://bugs.dojotoolkit.org/browser/dojox/trunk/math/BigInteger-ext.js">dojox.math.BigInteger class</a>.
+<li><a href="http://nomorecleartextpasswords.com/">No More Cleartext Passwords</a> - this project switched from another JavaScript BigInteger library for <a href="http://nomorecleartextpasswords.com/2009/03/big-integer-javascript-library-changed/">performance reasons</a>
+<li>Google's <a href="http://v8.googlecode.com/svn/data/benchmarks/v6/run.html">V8 benchmark suite, version 6</a>
+<li><a href="http://ats.oka.nu/titaniumcore/js/crypto/readme.txt">JavaScript Cryptography Toolkit</a>
+<li><a href="http://www9.atwiki.jp/kurushima/pub/jsrsa/">RSA-Sign JavaScript library</a>
+<li><a href="https://ziyan.info/2008/10/javascript-rsa/">JavaScript RSA</a>
+</ul>
 
 <h2>History</h2>
 
