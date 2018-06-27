@@ -35,6 +35,20 @@ snapshots after version 1.4.
 
 https://github.com/andyperlitch/jsbn
 
+## Using in your own project
+
+The most convenient way is to use [RawGit](https://rawgit.com/). For
+example,
+
+```html
+<script src="https://cdn.rawgit.com/akalin/jsbn/v1.4/jsbn.js"></script>
+<script src="https://cdn.rawgit.com/akalin/jsbn/v1.4/jsbn2.js"></script>
+```
+
+I make no guarantees about supporting this method, although it's what
+I use for my own personal projects. You can also copy the files
+directly to your own web server or CDN.
+
 ## License
 
 Use of this source code is governed by a BSD-style license that can be
