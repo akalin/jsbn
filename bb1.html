@@ -1,0 +1,192 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>JavaScript BB1 Encryption Demo</title>
+  </head>
+
+<script language="JavaScript" type="text/javascript" src="jsbn.js"></script>
+<script language="JavaScript" type="text/javascript" src="jsbn2.js"></script>
+<script language="JavaScript" type="text/javascript" src="ec.js"></script>
+<script language="JavaScript" type="text/javascript" src="sha1.js"></script>
+<script language="JavaScript" type="text/javascript" src="bb1.js"></script>
+<script language="JavaScript" type="text/javascript" src="prng4.js"></script>
+<script language="JavaScript" type="text/javascript" src="rng.js"></script>
+<script language="JavaScript">
+<!--
+function clear_outputs() {
+  document.bbtest.u.value = "";
+  document.bbtest.C0x.value = "";
+  document.bbtest.C0y.value = "";
+  document.bbtest.C1x.value = "";
+  document.bbtest.C1y.value = "";
+  document.bbtest.y.value = "";
+}
+
+function set_ietf() {
+  document.bbtest.message.value="Hi there!";
+  document.bbtest.identity.value="Bob";
+  document.bbtest.s.value="62759e95ce1af248040e220263fb41b965e";
+  document.bbtest.p.value="91bbe2be1c8950750784befffffffffffff6e441d41e12fb";
+  document.bbtest.q.value="fffffffffbfffffffffffffffffffffffff";
+  document.bbtest.Px.value="13cc538fe950411218d7f5c17ae58a15e58f0877b29f2fe1";
+  document.bbtest.Py.value="8cf7bab1a748d323cc601fabd8b479f54a60be11e28e18cf";
+  document.bbtest.P1x.value="0f809a992ed2467a138d72bc1d8931c6ccdd781bedc74627";
+  document.bbtest.P1y.value="11c933027beaaf73aa9022db366374b1c68d6bf7d7a888c2";
+  document.bbtest.P2x.value="0f8ac99a55e575bf595308cfea13edb8ec673983919121b0";
+  document.bbtest.P2y.value="3febb7c6369f5d5f18ee3ea6ca0181448a4f3c4f3385019c";
+  document.bbtest.P3x.value="2c10b43991052e78fac44fdce639c45824f5a3a2550b2a45";
+  document.bbtest.P3y.value="6d7c12d8a0681426a5bbc369c9ef54624356e2f6036a064f";
+  document.bbtest.v0.value="38f91032de6847a89fc3c83e663ed0c21c8f30ce65c0d7d3";
+  document.bbtest.v1.value="44b9aa10849cc8d8987ef2421770a340056745da8b99fba2";
+
+  clear_outputs();
+
+  document.bbtest.status.value = "Using IETF test vector parameters";
+}
+
+function set_voltage_1024() {
+  document.bbtest.message.value="Hello, world";
+  document.bbtest.identity.value="alice@test.com";
+
+  document.bbtest.p.value="cfb9fe71de5968a2a30df379546cb5d920fd070e6b0d71b63298afee2ecc1e382bf0ad6d70704a94bd9b9d73df7eb763618a602c341368082555775c6733b4eb";
+  document.bbtest.q.value="ffffffffffffffffffffffffffffffff7fffffff";
+  document.bbtest.Px.value="425a80f32776948cb39614d5b07d70f052d954e42945ec063bf513966faf52bcd0826c8dd4f0997d23bc6ceff0200657369ef2e6bb5a13634951e92a70b2144c";
+  document.bbtest.Py.value="52320171f1f90e0635d1395d884a765cd3d7010e0729016ed9d9bcc6a252b1e0172bdc9bc95cab170f3ac2089a376ca634afa7648d67b6a04ea8ffad42a71f26";
+  document.bbtest.P1x.value="7dfc74106a90afb0b8bb2cf0a27b3fba25d07a321b93860db8395ef33fa327cde66f6d26b50ce122340415aa1d69dfa7dcf41717d079e70b242c54f03cb4f81a";
+  document.bbtest.P1y.value="9542d66ec61bbd0ad073fa2865e1f5d64c9a2ed06a3abea2e8bf15288fac80193dd2260092bae1b4cb9ddb9c80e3687187872df5f73fd80a29b04b6585c7006a";
+  document.bbtest.P2x.value="7a5f60d61f8eef22d67b9b90b80e12335a8ef90ff36ba6575b1df0f7989e93172e98f5c30045c5cd3dcfba6d8b12859f4909f4b85617a7cbcd810b35faf3911b";
+  document.bbtest.P2y.value="10a09ac244ddcecfe191acc99c6504eabf0785caf1e3203203e869d1e957587b907685110c3d2d709d613d559967e2402a114b3dbe409295d6436fda5ef81551";
+  document.bbtest.P3x.value="0bbd886993bb6b1b225076ceb5308068823073f5da477e7127445ec835fe99c52ce7e4c0a16aa2b1319ab20f69a155d843f55bb6e3e12168d1283410d852b758";
+  document.bbtest.P3y.value="72be216d7877638c1c8ac3ecb133bfaa423c57dc60c12291f9d08b616c9516e85f5b418f86bd84faf03ab4798fae965293c241fb0d02683c58ca5687bac9b17e";
+  document.bbtest.v0.value="2858d35748f7d5ec445a8b1e3866e73d8cfe123d864f2c794b6b8995488f5ebdb756ee61c06e13c53038705d6324252608448d286c2bbd31b0b995ff2aa79417";
+  document.bbtest.v1.value="c825d882084a0282967eb4b6337dbbc067bc7befd13b27a6a10c0e5bb18e26385777eea274e467d4a74fa4689ae5851c61ff73f821b84f69688fb533ecb9ec0d";
+
+  do_s_rand();
+
+  clear_outputs();
+
+  document.bbtest.status.value = "Using 1024-bit sample parameters";
+}
+
+var rng;
+
+function do_init() {
+  if(document.bbtest.p.value.length == 0) set_ietf();
+  rng = new SecureRandom();
+}
+
+function do_s_rand() {
+  var bb = new BBparams;
+  bb.setPrime(document.bbtest.p.value);
+  bb.setSubPrime(document.bbtest.q.value);
+  document.bbtest.s.value = bb.randomS(rng).toString(16);
+}
+
+function do_encrypt() {
+  var before = new Date();
+
+  var bb = new BBparams;
+
+  bb.setPrime(document.bbtest.p.value);
+  bb.setSubPrime(document.bbtest.q.value);
+
+  var s = new BigInteger(document.bbtest.s.value, 16);
+
+  bb.setPoint(document.bbtest.Px.value, document.bbtest.Py.value);
+  bb.setAlpha(document.bbtest.P1x.value, document.bbtest.P1y.value);
+  bb.setBeta(document.bbtest.P2x.value, document.bbtest.P2y.value);
+  bb.setGamma(document.bbtest.P3x.value, document.bbtest.P3y.value);
+  bb.setV(document.bbtest.v0.value, document.bbtest.v1.value);
+
+  var result = bb.encrypt(document.bbtest.message.value,
+                          document.bbtest.identity.value, s);
+
+  var after = new Date();
+
+  var y = result[3];
+  var y_hex = "";
+  for(i = 0; i < y.length; ++i) {
+    if(i > 0) y_hex += ":";
+    y_hex += y.charCodeAt(i).toString(16);
+  }
+
+  document.bbtest.u.value = result[0].toString(16);
+  document.bbtest.C0x.value = result[1].getX().toBigInteger().toString(16);
+  document.bbtest.C0y.value = result[1].getY().toBigInteger().toString(16);
+  document.bbtest.C1x.value = result[2].getX().toBigInteger().toString(16);
+  document.bbtest.C1y.value = result[2].getY().toBigInteger().toString(16);
+  document.bbtest.y.value = y_hex;
+
+  document.bbtest.status.value = "Total time: " + (after - before) + "ms";
+}
+//-->
+</script>
+
+  <body onLoad='do_init();'>
+    <h1>JavaScript BB1 Encryption Demo</h1>
+
+<form name="bbtest" onSubmit='do_encrypt();return false;'>
+<h2>Input (plaintext)</h2>
+Message (string): <input name="message" type="text" value="" size=40><p>
+Identity (string): <input name="identity" type="text" value="" size=40><p>
+S (hex): <input name="s" type="text" value="" size=60>
+<input type="button" value="random" onClick="do_s_rand();"><p>
+<input type="button" value="encrypt" onClick="do_encrypt();"><p>
+<hr>
+<h2>Output (ciphertext)</h2>
+u: <input name="u" type="text" size=60><p>
+C0 (X,Y):<br>
+<input name="C0x" type="text" size=100><br>
+<input name="C0y" type="text" size=100><p>
+C1 (X,Y):<br>
+<input name="C1x" type="text" size=100><br>
+<input name="C1y" type="text" size=100><p>
+y: <input name="y" type="text" size=60><p>
+Status:<br>
+<input name="status" type="text" size=40><p>
+<hr>
+<h2>BB public parameters</h2><p>
+<input type="button" value="IETF test vector" onClick='set_ietf();'>
+<input type="button" value="1024-bit sample" onClick='set_voltage_1024();'>
+<p>
+p:<br>
+<input name="p" type="text" size=100><br>
+q:<br>
+<input name="q" type="text" size=60><p>
+P (X,Y):<br>
+<input name="Px" type="text" size=100><br>
+<input name="Py" type="text" size=100><p>
+P1 "alpha" (X,Y):<br>
+<input name="P1x" type="text" size=100><br>
+<input name="P1y" type="text" size=100><p>
+P2 "beta" (X,Y):<br>
+<input name="P2x" type="text" size=100><br>
+<input name="P2y" type="text" size=100><p>
+P3 "gamma" (X,Y):<br>
+<input name="P3x" type="text" size=100><br>
+<input name="P3y" type="text" size=100><p>
+v (re,im):<br>
+<input name="v0" type="text" size=100><br>
+<input name="v1" type="text" size=100>
+
+</form>
+
+<hr>
+<h2>Notes</h2>
+<ul>
+<li>Performance data moved to the <a href="speed.html">speed tables</a>
+<li>Implementation based on RFC 5091 "IBCS #1" with a minor correction.
+<li>Selecting the "IETF test vector" parameter set also sets the input values.
+<li>Selecting "encrypt" immediately after "IETF test vector" should reproduce the expected test vector outputs from RFC 5091 section 7.8.
+<li>Several performance improvements are on the to-do list including sliding window modexp, precomputation from fixed points ("acceleration tables"), and Montgomery reduction in F(p<sup>2</sup>) exponentiation.
+<li>Majority of runtime consists of three EC point multiplications with exponent same size as q.
+<li>Only SHA-1 currently supported; need to parameterize hash for larger groups.
+</ul>
+    <hr>
+    <address><a href="mailto:tjw@cs.stanford.edu">Tom Wu</a></address>
+<!-- Created: Sun May  4 19:00:47 PDT 2003 -->
+<!-- hhmts start -->
+Last modified: Mon Jun 23 16:06:05 PDT 2003
+<!-- hhmts end -->
+  </body>
+</html>
